@@ -83,7 +83,7 @@ function mochaSaucePlease(options, fn) {
 				};
 			})();
 			mocha.reporter("xunit", {});
-			new mocha._reporter(runner);
+			new mocha._reporter(runner, {});
 		}
 
 		// The Grid view needs more info about failures
