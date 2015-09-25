@@ -1,68 +1,46 @@
 function FancyJSON(runner) {
 
-	var root = null;
-	var result = {};
+	var result = {
+        tests: [],
+        duration: 0,
+        passed: 0,
+        failed: 0
+    };
 
-	function recurse(suite, result) {
+    function suiteTitle(suite) {
+        if (!suite || suite.title === '') {
+            return '';
+        }
 
-		result.durationSec = 0;
-		result.passed = true;
+        return suiteTitle(suite.parent) + ' -> ' + suite.title + '';
+    }
 
-		if(suite.title)
-			result.description = suite.title;
+    function appendTest(test, testResult) {
+        var duration = test.duration / 1000;
+        result.tests.push({
+            name: suiteTitle(test.parent) + '\n\t\t' + test.title,
+            result: testResult,
+            message: test.state,
+            duration: duration
+        });
 
-		if(suite.tests.length) {
-			result.specs = [];
-			for (var i = 0; i < suite.tests.length; i++) {
+        result.duration += duration
+    }
 
-				result.specs.push({
-					"description": suite.tests[i].title,
-					"durationSec": (suite.tests[i].duration / 1000) || 0, // duration of spec run in seconds
-					"passed": suite.tests[i].state === "passed" // did the spec pass?
-					//"passedCount": 1, // passed assertions in spec
-					//"failedCount": 0, // failed assertions in spec
-					//"totalCount": 1 // total assertions in spec
-				});
+    runner.on('pass', function(test){
+        appendTest(test, true);
+        result.passed++;
+    });
 
-				result.durationSec += (suite.tests[i].duration / 1000) || 0;
-
-				if(suite.tests[i].state !== "passed")
-					result.passed = false;
-
-			}
-		}
-
-		if(suite.suites.length) {
-
-			result.suites = [];
-
-			var sub = null;
-			for (var j = 0; j < suite.suites.length; j++) {
-
-				sub = {};
-				recurse(suite.suites[j], sub);
-				result.suites.push(sub);
-
-				result.durationSec += sub.durationSec || 0;
-
-				if(!sub.passed)
-					result.passed = false;
-
-			}
-
-		}
-
-	}
-
-	runner.on('suite', function(suite) {
-		if(suite.parent.root) root = suite.parent;
-	});
+    runner.on('fail', function(test, err){
+        appendTest(test, false);
+        result.failed++;
+    });
 
 	runner.on('end', function() {
-		recurse(root, result);
+        result.total = result.failed + result.passed;
 		window.jsonReport = result;
 	});
-
 }
 
 

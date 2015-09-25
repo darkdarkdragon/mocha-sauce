@@ -133,7 +133,7 @@ MochaSauce.prototype.start = function(fn) {
 
 								// update Sauce Labs with custom test data
 								var data = {
-									'custom-data': { mocha: res.jsonReport },
+									'custom-data': { custom: res.jsonReport },
 									'passed': !res.failures
 								};
 
