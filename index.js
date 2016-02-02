@@ -28,6 +28,8 @@ function MochaSauce(conf) {
 	this._concurrency = 2;
 	this.tags = conf.tags || [];
 	this.build = conf.build || '';
+    this.seleniumVersion = conf.seleniumVersion;
+    this.tunnelIdentifier = conf.tunnelIdentifier;
 	this._video = false;
 	this._screenshots = false;
 
@@ -89,6 +91,12 @@ MochaSauce.prototype.start = function(fn) {
 		// disable Sauce features not needed for unit tests (video + screenshot recording)
 		conf['record-video'] = self._video;
 		conf['record-screenshots'] = self._screenshots;
+        if (self.seleniumVersion) {
+          conf.seleniumVersion = self.seleniumVersion;
+        }
+        if (self.tunnelIdentifier) {
+          conf.tunnelIdentifier = self.tunnelIdentifier;
+        }
 
 		batch.push(function(done) {
 
@@ -130,10 +138,23 @@ MochaSauce.prototype.start = function(fn) {
 								res.browser = conf;
 
 								debug('results %j', res);
+                                var oridDuration = res.duration;
+                                if (res.duration) {
+                                  res.duration = res.duration / 1000;
+                                }
 
 								// update Sauce Labs with custom test data
-								var data = {
-									'custom-data': { mocha: res.jsonReport },
+                                var xUnitReport = res.xUnitReport;
+                                var failed = res.failed;
+                                delete res.xUnitReport;
+                                delete res.failed;
+                                var mochaRes = { mocha: res };
+                                while(JSON.stringify(mochaRes).length > 65535
+                                  && mochaRes.mocha.reports && mochaRes.mocha.reports.length > 0) {
+                                  mochaRes.mocha.reports.pop();
+                                }
+    							var data = {
+									'custom-data': mochaRes,
 									'passed': !res.failures
 								};
 
@@ -143,11 +164,15 @@ MochaSauce.prototype.start = function(fn) {
 									headers: {'Content-Type': 'application/json'},
 									body: JSON.stringify(data)
 								}, function (/*error, response, body*/) {
+                                    res.xUnitReport = xUnitReport;
+                                    res.failed = failed;
+                                    if (res.duration) {
+                                      res.duration = oridDuration;
+                                    }
 
 									self.emit('end', conf, res);
 									browser.quit();
 									done(null, res);
-
 								});
 
 							});

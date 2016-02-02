@@ -121,12 +121,35 @@ function mochaSaucePlease(options, fn) {
 			});
 		});
 
+        var failedTests = [];
+        function logFailure(test, err) {
+          var flattenTitles = function(test) {
+            var titles = [];
+            while (test.parent.title) {
+              titles.push(test.parent.title);
+              test = test.parent;
+            }
+            return titles.reverse();
+          };
+          failedTests.push({
+            //name: test.title,
+            name: test.fullTitle(),
+            result: false,
+            message: err.message,
+            // new SauceLabs interface doesn't show stack and titles
+            stack: err.stack,
+            titles: flattenTitles(test)
+          });
+        };
+        runner.on('fail', logFailure);
+
 		// implement custom reporter for console to read back from Sauce
 		runner.on('end', function() {
 			runner.stats.failed = failed;
 			runner.stats.xUnitReport = xUnitReport;
-			runner.stats.jsonReport = jsonReport;
+			//runner.stats.jsonReport = jsonReport;
 			window.mochaResults = runner.stats;
+            window.mochaResults.reports = failedTests;
 			window.chocoReady = true;
 		});
 

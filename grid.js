@@ -172,7 +172,7 @@ GridView.prototype.showFailures = function(){
 		var failed = res.failed;
 		console.log();
 		console.log('   %s %s', (browser.browserName || browser.app), browser.version);
-		console.log('   \033[90m%s\033[m', browser.platform);
+		console.log('   \u001b[90m%s\u001b[m', browser.platform);
 		failed.forEach(function(test){
 			var err = test.error;
 			var msg = err.message || '';
@@ -181,7 +181,7 @@ GridView.prototype.showFailures = function(){
 			msg = stack.slice(0, i);
 			console.log();
 			console.log('    %d) %s', ++n, test.fullTitle);
-			console.log('\033[31m%s\033[m', stack.replace(/^/gm, '       '));
+			console.log('\u001b[31m%s\u001b[m', stack.replace(/^/gm, '       '));
 		});
 		console.log();
 	});
@@ -213,9 +213,9 @@ GridView.prototype.draw = function(ctx){
 		var ppad = new Array(max - platform.length + 2).join(' ');
 		ctx.moveTo(x, y);
 		ctx.write(label + pad);
-		ctx.write(' \033[' + color + 'm' + sym + '\033[0m');
+		ctx.write(' \u001b[' + color + 'm' + sym + '\u001b[0m');
 		ctx.moveTo(x, y + 1);
-		ctx.write('\033[90m' + platform + ppad + '\033[0m');
+		ctx.write('\u001b[90m' + platform + ppad + '\u001b[0m');
 		x += max + 6;
 	});
 	ctx.write('\n\n');
