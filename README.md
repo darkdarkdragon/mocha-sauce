@@ -81,14 +81,15 @@ var MochaSauce = require("../index.js");
 
 // configure
 var sauce = new MochaSauce({
-	name: "project", // your project name
-	username: "username", // Sauce username
-	accessKey: "00000000-0000-0000-0000-000000000000", // Sauce access key
-	host: "localhost", // or http://ondemand.sauce.com if not using Sauce Connect
-	port: 4445, // 80
+  name: "project", // your project name
+  username: "username", // Sauce username
+  accessKey: "00000000-0000-0000-0000-000000000000", // Sauce access key
+  host: "localhost", // or http://ondemand.sauce.com if not using Sauce Connect
+  port: 4445, // 80,
+  runSauceConnect: true // run sauceConnect automatically
 
-	// the test url
-	url: "http://localhost/test" // point to the site running your mocha tests
+  // the test url
+  url: "http://localhost/test" // point to the site running your mocha tests
 });
 
 
@@ -109,7 +110,9 @@ sauce.on('end', function(browser, res) {
   console.log('  end : %s %s : %d failures', browser.browserName, browser.platform, res.failures);
 });
 
-sauce.start();
+sauce.start(function(err, res) {
+  console.log('-------------- done --------------');
+});
 ```
 
 The above is a very basic example. For a more advanced example that uses a super nice grid view, check out `examples/grid.js`.
@@ -137,6 +140,7 @@ Save this file somewhere, call it however you want. I'll choose `runner.js`.
    - `url` *url pointing to the site running your tests*
    - `build` *an identifier for the build*
    - `tags` *an optional array of tags*
+   - `runSauceConnect` *set to true to run Sauce Connect automatically*
    
 - `MochaSauce.browser(settings)`
    
