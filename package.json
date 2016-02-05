@@ -1,18 +1,37 @@
 {
-	"name": "mocha-sauce",
-	"version": "0.0.5",
-	"description": "Really fancy Mocha tests in the cloud with Saucelabs",
-	"keywords": ["mocha", "test", "tdd", "bdd", "saucelabs", "selenium", "cloud", "testing"],
-	"author": "Paul Bakaus <pbakaus@zynga.com>",
-	"dependencies": {
-		"mocha": "*",
-		"max-component": "*",
-		"sum-component": "*",
-		"term-canvas": "*",
-		"wd": "*",
-		"request": "*",
-		"debug": "*",
-		"batch": "*"
-	},
-	"main": "index"
+    "name": "mocha-in-sauce",
+    "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/darkdarkdragon/mocha-sauce.git"
+    },
+    "description": "Really fancy Mocha tests in the cloud with Saucelabs",
+    "keywords": ["mocha", "test", "tdd", "bdd", "saucelabs", "selenium", "cloud", "testing"],
+    "author": {
+        "name": "Paul Bakaus",
+        "email": "pbakaus@zynga.com"
+    },
+    "contributors": [
+        {
+            "name": "Ivan Tivonenko",
+            "email": "darkdarkdragon@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "dependencies": {
+        "max-component": "^1.0.0",
+        "sum-component": "^0.1.1",
+        "wd": "^0.4.0",
+        "request": "^2.69.0",
+        "debug": "^2.2.0",
+        "batch": "^0.5.3",
+        "mocha": "^2.1.0",
+        "sauce-connect-launcher": "^0.14.0",
+        "bluebird": "^3.2.1"
+    },
+    "devDependencies": {
+        "mocha": "^2.4.5",
+        "term-canvas": "^0.0.5"
+    },
+    "main": "index"
 }
